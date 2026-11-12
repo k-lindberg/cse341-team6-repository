@@ -6,6 +6,5 @@
 - Ask for review in the team Microsoft Teams channel when a PR is ready.
 
 ## Additional Git Workflow Tip
-- Always verify your current branch with git branch --show-current before making changes.
-- Use git status to check your changes before committing.
-
+- Always verify your current branch with `git branch --show-current` before making changes.
+- Use `git status` to check your changes before committing.
