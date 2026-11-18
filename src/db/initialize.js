@@ -1,20 +1,23 @@
-import trips from './seeds/trips.json' with { type: 'json' };
-import schedules from './seeds/schedules.json' with { type: 'json' };
-import stations from './seeds/stations.json' with { type: 'json' };
-import ticketClasses from './seeds/ticket-classes.json' with { type: 'json' };
-import trains from './seeds/trains.json' with { type: 'json' };
+import trips from "./seeds/trips.json" with { type: "json" };
+import schedules from "./seeds/schedules.json" with { type: "json" };
+import stations from "./seeds/stations.json" with { type: "json" };
+import ticketClasses from "./seeds/ticket-classes.json" with { type: "json" };
+import trains from "./seeds/trains.json" with { type: "json" };
+
+const roles = [{ name: "customer" }, { name: "admin" }];
 
 const starterCollections = [
-  ['trips', trips],
-  ['schedules', schedules],
-  ['stations', stations],
-  ['ticketClasses', ticketClasses],
-  ['trains', trains]
+  ["trips", trips],
+  ["schedules", schedules],
+  ["stations", stations],
+  ["ticketClasses", ticketClasses],
+  ["trains", trains],
+  ["roles", roles],
 ];
 
 const initializeDatabase = async (db) => {
   if (!db) {
-    throw new Error('A database connection is required to initialize data.');
+    throw new Error("A database connection is required to initialize data.");
   }
 
   for (const [collectionName, documents] of starterCollections) {
@@ -23,7 +26,12 @@ const initializeDatabase = async (db) => {
     await collection.insertMany(documents);
   }
 
-  const confirmations = db.collection('confirmations');
+  // Ensure the roles collection enforces unique role names,
+  // matching the Role Mongoose schema's unique: true.
+  const rolesCollection = db.collection("roles");
+  await rolesCollection.createIndex({ name: 1 }, { unique: true });
+
+  const confirmations = db.collection("confirmations");
   await confirmations.deleteMany({});
   await confirmations.createIndex({ id: 1 }, { unique: true });
 };
