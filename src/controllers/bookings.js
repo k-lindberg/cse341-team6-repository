@@ -21,7 +21,7 @@ export async function processBookingRequest(req, res) {
             id: generateConfirmationCode(),
             ...req.body
         };
-        const booking =await createNewBooking(bookingData);
+        const booking = await createNewBooking(bookingData);
 
         return res.redirect(`/trips/confirmation/${booking.id}`);
     } catch (error) {
