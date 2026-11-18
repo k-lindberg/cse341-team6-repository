@@ -387,21 +387,52 @@
     };
 
     // Event Listeners
-    selectedDayLabels.forEach((label) => {
-        label.addEventListener('click', (e) => {
-            e.preventDefault();
-            const label = e.currentTarget;
 
-            // Update visual and input selection
+    selectedDayLabels.forEach((label) => {
+        label.addEventListener('click', async (e) => {
+            e.preventDefault();
+            const clickedLabel = e.currentTarget;
+
+            // 1. Update visual and input selection for the day
             selectedDayLabels.forEach((lbl) => {
                 lbl.classList.remove('selected');
                 lbl.querySelector('input').checked = false;
                 lbl.querySelector('input').removeAttribute('checked');
             });
 
-            label.classList.add('selected');
-            label.querySelector('input').checked = true;
-            label.querySelector('input').setAttribute('checked', true);
+            clickedLabel.classList.add('selected');
+            const dayInput = clickedLabel.querySelector('input');
+            dayInput.checked = true;
+            dayInput.setAttribute('checked', true);
+
+            // 2. Fetch available tickets for this day
+            const selectedDay = dayInput.value;
+            try {
+                const response = await fetch(`/api/ticket-classes?day=${selectedDay}`);
+                const data = await response.json();
+                
+                // We use tc.class because your imported data uses the 'class' field
+                const availableClasses = data.ticketClasses.map(tc => tc.class);
+
+                // 3. Loop through ticket radios and disable/gray out unavailable ones
+                ticketRadios.forEach(radio => {
+                    const card = radio.closest('.ticket-card');
+                    const isAvailable = availableClasses.includes(radio.value);
+
+                    if (isAvailable) {
+                        radio.disabled = false;
+                        card.classList.remove('disabled-ticket');
+                        card.style.opacity = '1';
+                    } else {
+                        radio.disabled = true;
+                        card.classList.add('disabled-ticket');
+                        card.style.opacity = '0.5'; // Gray out
+                        if (radio.checked) radio.checked = false; // Uncheck if selected
+                    }
+                });
+            } catch (error) {
+                console.error("Error fetching ticket availability:", error);
+            }
         });
     });
 

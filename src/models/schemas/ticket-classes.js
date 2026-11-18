@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const ticketClassSchema = new mongoose.Schema(
   {
-    id: {
+    class: {
       type: String,
       required: true,
       unique: true,
@@ -13,24 +13,22 @@ const ticketClassSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    description: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    priceMultiplier: {
+    pricePerKm: {
       type: Number,
       required: true,
-      min: 1,
     },
     amenities: {
+      type: [String],
+      required: false,
+    },
+    daysAvailable: {
+      type: [String],
+      required: true,
+    },
+    description: {
       type: String,
       required: false,
       trim: true,
-    },
-    isAvailable: {
-      type: Boolean,
-      default: true,
     },
   },
   {
