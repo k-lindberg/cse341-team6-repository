@@ -1,102 +1,213 @@
 <%- include('../partials/header') %>
 
-<article class="route-detail">
-    <div class="route-header">
-        <div class="route-header-content">
-            <h1 class="route-name"><%= details.name %></h1>
-            <p class="route-description"><%= details.description %></p>
-            
-            <% if (details.highlights && details.highlights.length > 0) { %>
-            <div class="highlights">
-                <% details.highlights.forEach(function(highlight) { %>
-                <span class="highlight-tag"><%= highlight %></span>
-                <% }); %>
-            </div>
-            <% } %>
-        </div>
-        
-        <% if (details.imageUrl) { %>
-        <div class="route-image">
-            <img src="<%= details.imageUrl %>" alt="<%= details.name %>">
-        </div>
-        <% } %>
-    </div>
+    <article class="route-detail">
+        <div class="route-header">
+            <div class="route-header-content">
+                <h1 class="route-name">
+                    <%= details.name %>
+                </h1>
+                <p class="route-description">
+                    <%= details.description %>
+                </p>
 
-    <div class="route-info">
-        <div class="info-grid">
-            <div class="info-item">
-                <span class="info-label">Region</span>
-                <span class="info-value region-<%= details.region %>"><%= details.region.charAt(0).toUpperCase() + details.region.slice(1) %></span>
-            </div>
-            
-            <div class="info-item">
-                <span class="info-label">Duration</span>
-                <span class="info-value"><%= details.duration %></span>
-            </div>
-            
-            <div class="info-item">
-                <span class="info-label">Distance</span>
-                <span class="info-value"><%= details.distance %> km</span>
-            </div>
-            
-            <div class="info-item">
-                <span class="info-label">Best Season</span>
-                <span class="info-value season-<%= details.bestSeason %>"><%= details.bestSeason.charAt(0).toUpperCase() + details.bestSeason.slice(1) %></span>
-            </div>
-        </div>
-
-        <div class="route-stations">
-            <h2>Trip</h2>
-            <div class="stations">
-                <div class="station">
-                    <span class="station-label">Start</span>
-                    <span class="station-name"><%= details.startStation.charAt(0).toUpperCase() + details.startStation.slice(1) %></span>
-                </div>
-                <div class="station">
-                    <span class="station-label">End</span>
-                    <span class="station-name"><%= details.endStation.charAt(0).toUpperCase() + details.endStation.slice(1) %></span>
-                </div>
-            </div>
-        </div>
-
-        <div class="route-operating">
-            <h2>Operating Schedule</h2>
-            <div class="months-grid">
-                <% details.operatingMonths.forEach(function(month) { %>
-                <span class="month-badge"><%= month %></span>
-                <% }); %>
-            </div>
-        </div>
-
-        <% if (details.schedules && details.schedules.length > 0) { %>
-        <div class="route-schedules">
-            <h2>Available Schedules</h2>
-            <div class="schedules-grid">
-                <% details.schedules.forEach(function(schedule) { %>
-                <div class="schedule-card">
-                    <div class="schedule-times">
-                        <div class="time-block">
-                            <span class="time-label">Departs</span>
-                            <span class="time-value"><%= schedule.departureTime %></span>
-                        </div>
-                        <span class="time-arrow">→</span>
-                        <div class="time-block">
-                            <span class="time-label">Arrives</span>
-                            <span class="time-value"><%= schedule.arrivalTime %></span>
-                        </div>
+                <% if (details.highlights && details.highlights.length> 0) { %>
+                    <div class="highlights">
+                        <% details.highlights.forEach(function(highlight) { %>
+                            <span class="highlight-tag">
+                                <%= highlight %>
+                            </span>
+                            <% }); %>
                     </div>
-                    <div class="schedule-days">
-                        <% schedule.daysOfWeek.forEach(function(day) { %>
-                        <span class="day-badge"><%= day.substring(0, 3) %></span>
+                    <% } %>
+            </div>
+
+            <% if (details.imageUrl) { %>
+                <div class="route-image">
+                    <img src="<%= details.imageUrl %>" alt="<%= details.name %>">
+                </div>
+                <% } %>
+        </div>
+
+        <div class="route-info">
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Region</span>
+                    <span class="info-value region-<%= details.region %>">
+                        <%= details.region.charAt(0).toUpperCase() + details.region.slice(1) %>
+                    </span>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">Duration</span>
+                    <span class="info-value">
+                        <%= details.duration %>
+                    </span>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">Distance</span>
+                    <span class="info-value">
+                        <%= details.distance %> km
+                    </span>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">Best Season</span>
+                    <span class="info-value season-<%= details.bestSeason %>">
+                        <%= details.bestSeason.charAt(0).toUpperCase() + details.bestSeason.slice(1) %>
+                    </span>
+                </div>
+            </div>
+
+            <div class="route-stations">
+                <h2>Trip</h2>
+                <div class="stations">
+                    <div class="station">
+                        <span class="station-label">Start</span>
+                        <span class="station-name">
+                            <%= details.startStation.charAt(0).toUpperCase() + details.startStation.slice(1) %>
+                        </span>
+                    </div>
+
+                    <div class="station">
+                        <span class="station-label">End</span>
+                        <span class="station-name">
+                            <%= details.endStation.charAt(0).toUpperCase() + details.endStation.slice(1) %>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="route-operating">
+                <h2>Operating Schedule</h2>
+                <div class="months-grid">
+                    <% details.operatingMonths.forEach(function(month) { %>
+                        <span class="month-badge">
+                            <%= month %>
+                        </span>
                         <% }); %>
-                    </div>
-                    <a href="/trips/booking/<%= schedule.id %>" class="book-btn">Book Now</a>
                 </div>
-                <% }); %>
             </div>
-        </div>
-        <% } %>
-    </div>
-</article>
 
-<%- include('../partials/footer') %>
+            <div class="route-schedules">
+                <h2>Available Schedules</h2>
+
+                <label for="schedule-month">Select a month:</label>
+
+                <select id="schedule-month">
+                    <% details.operatingMonths.forEach(function(month) { %>
+                        <option value="<%= month %>">
+                            <%= new Date(2000, month - 1).toLocaleString('en', { month: 'long' }) %>
+                        </option>
+                        <% }); %>
+                </select>
+
+                <div id="schedules-grid" class="schedules-grid" data-trip-id="<%= details.id %>">
+                    <p>Loading schedules...</p>
+                </div>
+            </div>
+
+            <script>
+                
+                    const monthSelector = document.getElementById('schedule-month');
+                    const schedulesGrid = document.getElementById('schedules-grid');
+                    const tripId = schedulesGrid.dataset.tripId;
+
+
+                async function loadSchedules() {
+                    const month = monthSelector.value;
+
+                    schedulesGrid.textContent = 'Loading schedules...';
+
+                    try {
+                        const response = await fetch(
+                            `/api/trips/${encodeURIComponent(tripId)}/schedules?month=${month}`
+                        );
+
+                        if (!response.ok) {
+                            throw new Error('Unable to load schedules.');
+                        }
+
+                        const schedules = await response.json();
+
+                        const activeSchedules = schedules.filter(
+                            schedule => schedule.status === true
+                        );
+
+                        schedulesGrid.replaceChildren();
+
+                        if (activeSchedules.length === 0) {
+                            schedulesGrid.textContent =
+                                'No active schedules are available for this month.';
+                            return;
+                        }
+
+                        activeSchedules.forEach(schedule => {
+                            const card = document.createElement('div');
+                            card.className = 'schedule-card';
+
+                            const times = document.createElement('div');
+                            times.className = 'schedule-times';
+
+                            const departure = document.createElement('div');
+                            departure.className = 'time-block';
+
+                            const departureLabel = document.createElement('span');
+                            departureLabel.className = 'time-label';
+                            departureLabel.textContent = 'Departs';
+
+                            const departureTime = document.createElement('span');
+                            departureTime.className = 'time-value';
+                            departureTime.textContent = schedule.departureTime;
+
+                            departure.append(departureLabel, departureTime);
+
+                            const arrow = document.createElement('span');
+                            arrow.className = 'time-arrow';
+                            arrow.textContent = '→';
+
+                            const arrival = document.createElement('div');
+                            arrival.className = 'time-block';
+
+                            const arrivalLabel = document.createElement('span');
+                            arrivalLabel.className = 'time-label';
+                            arrivalLabel.textContent = 'Arrives';
+
+                            const arrivalTime = document.createElement('span');
+                            arrivalTime.className = 'time-value';
+                            arrivalTime.textContent = schedule.arrivalTime;
+
+                            arrival.append(arrivalLabel, arrivalTime);
+
+                            times.append(departure, arrow, arrival);
+
+                            const days = document.createElement('div');
+                            days.className = 'schedule-days';
+
+                            schedule.daysOfWeek.forEach(day => {
+                                const badge = document.createElement('span');
+                                badge.className = 'day-badge';
+                                badge.textContent = day.substring(0, 3);
+                                days.appendChild(badge);
+                            });
+
+                            const bookingLink = document.createElement('a');
+                            bookingLink.href = `/trips/booking/${schedule.id}`;
+                            bookingLink.className = 'book-btn';
+                            bookingLink.textContent = 'Book Now';
+
+                            card.append(times, days, bookingLink);
+                            schedulesGrid.appendChild(card);
+                        });
+                    } catch (error) {
+                        schedulesGrid.textContent = error.message;
+                    }
+                }
+
+                monthSelector.addEventListener('change', loadSchedules);
+                loadSchedules();
+            </script>
+        </div>
+    </article>
+
+    <%- include('../partials/footer') %>

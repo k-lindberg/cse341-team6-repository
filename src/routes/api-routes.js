@@ -1,8 +1,12 @@
 
-import { Router } from "express";
-import { getSchedulesForTrip } from "../controllers/schedules.js";
+import { Router } from 'express';
+import { trainsApi } from './trains.js';
+import { getSchedulesForTrip } from '../controllers/schedules.js';
 
 const router = Router();
+
+// Trains API
+router.get('/trains', trainsApi);
 
 /**
  * @openapi
@@ -33,6 +37,6 @@ const router = Router();
  *       500:
  *         description: Unable to retrieve schedules
  */
-router.get("/trips/:id/schedules", getSchedulesForTrip);
+router.get('/trips/:id/schedules', getSchedulesForTrip);
 
 export default router;

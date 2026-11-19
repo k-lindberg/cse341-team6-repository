@@ -1,29 +1,13 @@
-import railTripsRouter from './trips.js';
-import { trainsApi, trainsPage } from './trains.js';
 import { Router } from 'express';
-import { homePage, aboutPage, testErrorPage } from './index.js';
-import schedulesRouter from "./schedules.js";
+import ejsRoutes from './ejs-routes.js';
+import apiRoutes from './api-routes.js';
 
 const router = Router();
 
-// Home page
-router.get('/', homePage);
+// Website routes (EJS pages)
+router.use('/', ejsRoutes);
 
-// About page
-router.get('/about', aboutPage);
-
-// Trains page
-router.get('/trains', trainsPage);
-
-// Trains API
-router.get('/api/trains', trainsApi);
-
-// Rail trips
-router.use('/trips', railTripsRouter);
-
-router.use("/api", schedulesRouter);
-
-// Test 500 error page
-router.get('/500', testErrorPage);
+// JSON API routes
+router.use('/api', apiRoutes);
 
 export default router;
