@@ -4,26 +4,34 @@ import { Router } from 'express';
 import { homePage, aboutPage, testErrorPage } from './index.js';
 import apiRoutes from './api-routes.js';
 import ejsRoutes from './ejs-routes.js';
+import authRouter from "./auth.js";
+import adminRouter from "./admin.js";
 
 const router = Router();
 
 // Home page
-router.get('/', homePage);
+router.get("/", homePage);
 
 // About page
-router.get('/about', aboutPage);
+router.get("/about", aboutPage);
 
 // Trains page
-router.get('/trains', trainsPage);
+router.get("/trains", trainsPage);
 
 // Trains API
-router.get('/api/trains', trainsApi);
+router.get("/api/trains", trainsApi);
+
+// Auth (register/login/logout)
+router.use("/", authRouter);
+
+// Admin (protected dashboard)
+router.use("/admin", adminRouter);
 
 // Rail trips
-router.use('/trips', railTripsRouter);
+router.use("/trips", railTripsRouter);
 
 // Test 500 error page
-router.get('/500', testErrorPage);
+router.get("/500", testErrorPage);
 
 // API routes
 router.use('/api', apiRoutes);
