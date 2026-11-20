@@ -114,11 +114,12 @@ export const login = async (req, res, next) => {
     req.session.user = {
       id: user._id.toString(),
       displayName: user.displayName,
+      email: user.email,
       role: user.role?.name || "customer",
     };
 
     const redirectTo =
-      req.session.user.role === "admin" ? "/admin/dashboard" : "/";
+      req.session.user.role === "admin" ? "/admin/dashboard" : "/dashboard";
     return res.redirect(redirectTo);
   } catch (error) {
     return next(error);

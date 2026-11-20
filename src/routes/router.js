@@ -6,6 +6,7 @@ import apiRoutes from './api-routes.js';
 import ejsRoutes from './ejs-routes.js';
 import authRouter from "./auth.js";
 import adminRouter from "./admin.js";
+import dashboardRouter from "./dashboard.js";
 
 const router = Router();
 
@@ -23,6 +24,8 @@ router.get("/api/trains", trainsApi);
 
 // Auth (register/login/logout)
 router.use("/", authRouter);
+
+router.use("/dashboard", dashboardRouter);
 
 // Admin (protected dashboard)
 router.use("/admin", adminRouter);

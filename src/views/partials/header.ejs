@@ -39,7 +39,7 @@
     <li><a href="/trains">Trains</a></li>
     <li><a href="/about">About</a></li>
     <% if (user) { %>
-        <li><a href="<%= user.role === 'admin' ? '/admin/dashboard' : '/' %>">Dashboard</a></li>
+        <li><a href="<%= user.role === 'admin' ? '/admin/dashboard' : '/dashboard' %>">Dashboard</a></li>
         <li>
             <form method="POST" action="/logout" class="logout-form">
                 <button type="submit">Log out</button>

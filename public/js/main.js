@@ -139,9 +139,45 @@ const hookBookingsCatalog = async () => {
     }
 };
 
+const hookDashboardBookings = async () => {
+    const listEl = document.getElementById('dashboard-bookings-list');
+
+    if (!listEl) {
+        return;
+    }   
+
+    try {
+        const response = await fetch('/api/bookings/my');
+        
+        if (!response.ok) {
+            throw new Error(`Failed to load user bookings (${response.status})`);
+        }
+
+        const bookings = await response.json();
+
+        if (bookings.length === 0) {
+            listEl.innerHTML = '<p>No bookings found.</p>';
+            return;
+        }
+
+        listEl.innerHTML = bookings.map(booking => `
+            <div class="booking-card">
+                <h3>${booking.id}</h3>
+                <p><strong>Trip:</strong> ${booking.tripId}</p>
+                <p><strong>Schedule:</strong> ${booking.scheduleId}</p>
+                <p><strong>Passengers:</strong> ${booking.passengers.length}</p>
+            </div>
+        `).join('');
+    } catch (error) {
+        console.error(error);
+        listEl.innerHTML = '<p>Unable to load your bookings at this time.</p>';
+    }
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     hookRegionSorter();
     hookSeasonSorter();
     hookTrainsCatalog();
     hookBookingsCatalog();
+    hookDashboardBookings();
 });

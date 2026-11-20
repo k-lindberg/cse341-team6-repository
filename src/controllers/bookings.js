@@ -67,3 +67,15 @@ export function bookingsAdminPage(req, res) {
         title: 'Bookings Admin',
     });
 }
+
+export async function getMyBookings(req, res) {
+    try {
+        const userEmail = req.session.user?.email;
+        const bookings = await findAllBookings({});
+        const myBookings = bookings.filter(booking => booking.passengers?.some(passenger => passenger.email === userEmail));
+        return res.status(200).json(myBookings);
+    } catch (error) {
+        console.error('Error fetching user bookings:', error);
+        return res.status(500).json({ error: 'Failed to fetch user bookings' });
+    }
+}
