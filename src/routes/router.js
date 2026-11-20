@@ -4,6 +4,7 @@ import authRouter from "./auth.js";
 import adminRouter from "./admin.js";
 import { Router } from "express";
 import { homePage, aboutPage, testErrorPage } from "./index.js";
+import usersRouter from "./users.js";
 
 const router = Router();
 
@@ -24,6 +25,8 @@ router.use("/", authRouter);
 
 // Admin (protected dashboard)
 router.use("/admin", adminRouter);
+
+router.use("/users", usersRouter);
 
 // Rail trips
 router.use("/trips", railTripsRouter);
