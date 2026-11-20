@@ -33,6 +33,7 @@ const ticketClassSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    collection: "ticketClasses", // <-- THIS IS THE MAGIC LINE
   }
 );
 

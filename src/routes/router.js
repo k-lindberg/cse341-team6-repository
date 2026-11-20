@@ -1,6 +1,6 @@
 import railTripsRouter from './trips.js';
 import { trainsApi, trainsPage } from './trains.js';
-import { ticketClassesApi, ticketClassesPage } from './ticket-classes.js'; // <-- NEW IMPORT
+import { ticketClassesApi, ticketClassesPage } from './ticket-classes.js';
 import { Router } from 'express';
 import { homePage, aboutPage, testErrorPage } from './index.js';
 
@@ -16,7 +16,7 @@ router.get('/about', aboutPage);
 router.get('/trains', trainsPage);
 router.get('/api/trains', trainsApi);
 
-// Ticket Classes page <-- NEW ROUTES
+// Ticket Classes page
 router.get('/ticket-classes', ticketClassesPage);
 router.get('/api/ticket-classes', ticketClassesApi);
 
