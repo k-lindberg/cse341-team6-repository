@@ -1,9 +1,12 @@
-import railTripsRouter from "./trips.js";
-import { trainsApi, trainsPage } from "./trains.js";
+import railTripsRouter from './trips.js';
+import { trainsApi, trainsPage } from './trains.js';
+import { Router } from 'express';
+import { homePage, aboutPage, testErrorPage } from './index.js';
+import apiRoutes from './api-routes.js';
+import ejsRoutes from './ejs-routes.js';
 import authRouter from "./auth.js";
 import adminRouter from "./admin.js";
-import { Router } from "express";
-import { homePage, aboutPage, testErrorPage } from "./index.js";
+import dashboardRouter from "./dashboard.js";
 
 const router = Router();
 
@@ -22,6 +25,8 @@ router.get("/api/trains", trainsApi);
 // Auth (register/login/logout)
 router.use("/", authRouter);
 
+router.use("/dashboard", dashboardRouter);
+
 // Admin (protected dashboard)
 router.use("/admin", adminRouter);
 
@@ -30,5 +35,11 @@ router.use("/trips", railTripsRouter);
 
 // Test 500 error page
 router.get("/500", testErrorPage);
+
+// API routes
+router.use('/api', apiRoutes);
+
+// EJS pages
+router.use(ejsRoutes);
 
 export default router;
