@@ -147,7 +147,7 @@ const hookDashboardBookings = async () => {
     }   
 
     try {
-        const response = await fetch('/api/bookings/my');
+        const response = await fetch('/api/bookings/me');
         
         if (!response.ok) {
             throw new Error(`Failed to load user bookings (${response.status})`);
