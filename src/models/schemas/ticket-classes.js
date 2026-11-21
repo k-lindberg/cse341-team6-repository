@@ -16,6 +16,7 @@ const ticketClassSchema = new mongoose.Schema(
     pricePerKm: {
       type: Number,
       required: true,
+      min: 0, // <-- ADDED THIS LINE
     },
     amenities: {
       type: [String],

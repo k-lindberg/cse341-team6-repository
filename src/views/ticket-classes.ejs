@@ -23,7 +23,8 @@
 
             <dl class="train-specs">
                 <div class="spec-item">
-                    <dt>Price Multiplier</dt>
+                    <!-- FIX 1: Changed label to Price per Km -->
+                    <dt>Price per Km</dt>
                     <dd data-field="multiplier"></dd>
                 </div>
                 <div class="spec-item">
@@ -68,7 +69,10 @@
                 // Map the data to the data-field attributes
                 clone.querySelector('[data-field="name"]').textContent = ticketClass.name;
                 clone.querySelector('[data-field="description"]').textContent = ticketClass.description;
-                clone.querySelector('[data-field="multiplier"]').textContent = `${ticketClass.priceMultiplier}x`;
+                
+                // FIX 2: Changed priceMultiplier to pricePerKm
+                clone.querySelector('[data-field="multiplier"]').textContent = `¥${ticketClass.pricePerKm}`;
+                
                 clone.querySelector('[data-field="amenities"]').textContent = ticketClass.amenities || 'None';
 
                 listElement.appendChild(clone);
