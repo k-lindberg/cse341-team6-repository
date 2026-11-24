@@ -2,6 +2,10 @@
 import { trainsApi, trainsPage } from "./trains.js";
 import apiRoutes from "./api-routes.js";
 import ejsRoutes from "./ejs-routes.js";
+import railTripsRouter from "./trips.js";
+import { trainsApi, trainsPage } from "./trains.js";
+import authRouter from "./auth.js";
+import adminRouter from "./admin.js";
 import { Router } from "express";
 import { homePage, aboutPage, testErrorPage } from "./index.js";
 
@@ -24,6 +28,15 @@ router.use("/api", apiRoutes);
 
 // EJS Page routes (Trips, etc.)
 router.use("/", ejsRoutes);
+
+// Auth (register/login/logout)
+router.use("/", authRouter);
+
+// Admin (protected dashboard)
+router.use("/admin", adminRouter);
+
+// Rail trips
+router.use("/trips", railTripsRouter);
 
 // Test 500 error page
 router.get("/500", testErrorPage);

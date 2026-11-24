@@ -35,12 +35,23 @@
                     <span></span>
                 </label>
                 <ul>
-                    <li><a href="/trips">Trips</a></li>
-                    <li><a href="/trains">Trains</a></li>
-                    <li><a href="/about">About</a></li>
-                    <li><a href="/404">404</a></li>
-                    <li><a href="/500">500</a></li>
-                </ul>
+    <li><a href="/trips">Trips</a></li>
+    <li><a href="/trains">Trains</a></li>
+    <li><a href="/about">About</a></li>
+    <% if (user) { %>
+        <li><a href="<%= user.role === 'admin' ? '/admin/dashboard' : '/' %>">Dashboard</a></li>
+        <li>
+            <form method="POST" action="/logout" class="logout-form">
+                <button type="submit">Log out</button>
+            </form>
+        </li>
+    <% } else { %>
+        <li><a href="/login">Log in</a></li>
+        <li><a href="/register">Register</a></li>
+    <% } %>
+    <li><a href="/404">404</a></li>
+    <li><a href="/500">500</a></li>
+</ul>
             </nav>
         </div>
     </header>
