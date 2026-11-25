@@ -1,4 +1,10 @@
 <%- include('./partials/header') %>
 <h1>Welcome to the Admin Dashboard</h1>
 <p>You are signed in as <strong><%= user.displayName %></strong> (admin).</p>
+
+<!-- NEW: Link to the Trip Admin Page -->
+<div style="margin-top: 1.5rem;">
+    <p><a href="/admin/trips" style="padding: 10px 15px; background-color: #4a7c59; color: white; text-decoration: none; border-radius: 5px;">Manage Trips</a></p>
+</div>
+
 <%- include('./partials/footer') %>
