@@ -63,17 +63,22 @@
                 clone.querySelector('[data-field="region"]').textContent = trip.region;
 
                 const deleteBtn = clone.querySelector('.btn-delete');
+                
+                // UPDATED DELETE HANDLER WITH BETTER ERROR HANDLING
                 deleteBtn.addEventListener('click', async () => {
                     if (!confirm(`Are you sure you want to delete ${trip.name}?`)) return;
                     
+                    deleteBtn.disabled = true;
                     try {
-                        const delRes = await fetch(`/api/trips/${trip.id}`, { method: 'DELETE' });
-                        if (!delRes.ok) throw new Error('Failed to delete');
-                        // Remove the row from the screen
+                        const delRes = await fetch(`/api/trips/${encodeURIComponent(trip.id)}`, { method: 'DELETE' });
+                        if (!delRes.ok) {
+                            const body = await delRes.json().catch(() => ({}));
+                            throw new Error(body.error || body.message || `Delete failed (${delRes.status})`);
+                        }
                         deleteBtn.closest('tr').remove();
                     } catch (err) {
-                        alert('Error deleting trip.');
-                        console.error(err);
+                        alert(err.message);
+                        deleteBtn.disabled = false;
                     }
                 });
 
