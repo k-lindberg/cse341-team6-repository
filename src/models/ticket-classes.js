@@ -9,7 +9,13 @@ export async function getAllTicketClasses() {
 }
 
 export async function getTicketClassesForDay(day) {
-  return TicketClass.find({ 
-    daysAvailable: { $regex: new RegExp(`^${day}$`, 'i') } 
-  }).lean(); 
+  // day is already checked against an allowlist in the controller.
+  // A class with no daysAvailable list runs every day.
+  return TicketClass.find({
+    $or: [
+      { daysAvailable: day },
+      { daysAvailable: { $exists: false } },
+      { daysAvailable: { $size: 0 } },
+    ],
+  }).lean();
 }

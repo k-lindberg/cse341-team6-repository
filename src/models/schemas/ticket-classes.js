@@ -16,15 +16,19 @@ const ticketClassSchema = new mongoose.Schema(
     pricePerKm: {
       type: Number,
       required: true,
-      min: 0, // <-- ADDED THIS LINE
+      min: 0, 
     },
     amenities: {
       type: [String],
       required: false,
     },
     daysAvailable: {
-      type: [String],
-      required: true,
+      type: [{
+        type: String,
+        lowercase: true,
+        enum: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
+      }],
+      required: false,
     },
     description: {
       type: String,
@@ -34,7 +38,7 @@ const ticketClassSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-    collection: "ticketClasses", // <-- THIS IS THE MAGIC LINE
+    collection: "ticketClasses", 
   }
 );
 

@@ -55,7 +55,12 @@
                 <% } %>
             </div>
         </section>
+                </div> <!-- line 55 -->
+    </section> <!-- line 56 -->
 
+    <p class="trains-state trains-error" id="ticket-availability-error" hidden></p>
+
+    <section class="day-selection"> <!-- line 59 -->
         <section class="day-selection">
             <h2 class="section-title">Select The Day</h2>
             
@@ -388,7 +393,7 @@
 
     // Event Listeners
 
-    selectedDayLabels.forEach((label) => {
+        selectedDayLabels.forEach((label) => {
         label.addEventListener('click', async (e) => {
             e.preventDefault();
             const clickedLabel = e.currentTarget;
@@ -407,35 +412,35 @@
 
             // 2. Fetch available tickets for this day
             const selectedDay = dayInput.value;
+            const availabilityError = document.getElementById('ticket-availability-error');
+            
             try {
-                const response = await fetch(`/api/ticket-classes?day=${selectedDay}`);
-                const data = await response.json();
+                const response = await fetch(`/api/ticket-classes?day=${encodeURIComponent(selectedDay)}`);
+                if (!response.ok) throw new Error(`Request failed: ${response.status}`);
                 
-                // We use tc.class because your imported data uses the 'class' field
-                const availableClasses = data.ticketClasses.map(tc => tc.class);
+                const data = await response.json();
+                const availableClasses = data.ticketClasses.map(tc => tc.class.toLowerCase());
+                
+                availabilityError.hidden = true;
 
-                // 3. Loop through ticket radios and disable/gray out unavailable ones
                 ticketRadios.forEach(radio => {
                     const card = radio.closest('.ticket-card');
-                    const isAvailable = availableClasses.includes(radio.value);
-
-                    if (isAvailable) {
-                        radio.disabled = false;
-                        card.classList.remove('disabled-ticket');
-                        card.style.opacity = '1';
-                    } else {
-                        radio.disabled = true;
-                        card.classList.add('disabled-ticket');
-                        card.style.opacity = '0.5'; // Gray out
-                        if (radio.checked) radio.checked = false; // Uncheck if selected
-                    }
+                    const isAvailable = availableClasses.includes(radio.value.toLowerCase());
+                    
+                    radio.disabled = !isAvailable;
+                    card.classList.toggle('disabled-ticket', !isAvailable);
+                    card.style.opacity = isAvailable ? '1' : '0.5';
+                    
+                    if (!isAvailable && radio.checked) radio.checked = false;
                 });
             } catch (error) {
-                console.error("Error fetching ticket availability:", error);
+                console.error('Error fetching ticket availability:', error);
+                availabilityError.textContent = "We couldn't check ticket availability for this day. All classes are still shown.";
+                availabilityError.hidden = false;
             }
         });
     });
-
+    
     addPassengerBtn.addEventListener('click', addPassenger);
 
     passengersList.addEventListener('click', (e) => {
