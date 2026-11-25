@@ -1,0 +1,92 @@
+<%- include('./partials/header') %>
+
+<div class="container" style="padding: 2rem;">
+    <h1>Trip Administration</h1>
+    <p>Manage all trips in the Kizuna Rail network.</p>
+
+    <div id="loading-message">Loading trips...</div>
+    <div id="error-message" style="color: red;" hidden></div>
+
+    <table class="admin-table" style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+        <thead>
+            <tr style="border-bottom: 2px solid #ccc; text-align: left;">
+                <th>ID</th>
+                <th>Name</th>
+                <th>Region</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="trip-list">
+            <!-- Rows will be injected here -->
+        </tbody>
+    </table>
+</div>
+
+<template id="trip-row-template">
+    <tr style="border-bottom: 1px solid #eee;">
+        <td data-field="id" style="padding: 0.5rem;"></td>
+        <td data-field="name" style="padding: 0.5rem;"></td>
+        <td data-field="region" style="padding: 0.5rem;"></td>
+        <td style="padding: 0.5rem;">
+            <button class="btn-delete" style="background: red; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">Delete</button>
+        </td>
+    </tr>
+</template>
+
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        const loading = document.getElementById('loading-message');
+        const errorMsg = document.getElementById('error-message');
+        const list = document.getElementById('trip-list');
+        const template = document.getElementById('trip-row-template');
+
+        let trips = [];
+
+        // Fetch trips from the API
+        try {
+            const response = await fetch('/api/trips');
+            if (!response.ok) throw new Error('Failed to fetch trips');
+            const data = await response.json();
+            trips = data.trips || data; // Handle different API response shapes
+
+            loading.hidden = true;
+            
+            if (trips.length === 0) {
+                list.innerHTML = '<tr><td colspan="4">No trips found.</td></tr>';
+                return;
+            }
+
+            trips.forEach(trip => {
+                const clone = template.content.cloneNode(true);
+                clone.querySelector('[data-field="id"]').textContent = trip.id;
+                clone.querySelector('[data-field="name"]').textContent = trip.name;
+                clone.querySelector('[data-field="region"]').textContent = trip.region;
+
+                const deleteBtn = clone.querySelector('.btn-delete');
+                deleteBtn.addEventListener('click', async () => {
+                    if (!confirm(`Are you sure you want to delete ${trip.name}?`)) return;
+                    
+                    try {
+                        const delRes = await fetch(`/api/trips/${trip.id}`, { method: 'DELETE' });
+                        if (!delRes.ok) throw new Error('Failed to delete');
+                        // Remove the row from the screen
+                        deleteBtn.closest('tr').remove();
+                    } catch (err) {
+                        alert('Error deleting trip.');
+                        console.error(err);
+                    }
+                });
+
+                list.appendChild(clone);
+            });
+
+        } catch (error) {
+            loading.hidden = true;
+            errorMsg.textContent = "Error loading trips. Please try again.";
+            errorMsg.hidden = false;
+            console.error(error);
+        }
+    });
+</script>
+
+<%- include('./partials/footer') %>
