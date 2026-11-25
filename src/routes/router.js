@@ -32,7 +32,74 @@ router.get('/ticket-classes', ticketClassesPage);
 router.get('/api/ticket-classes', ticketClassesApi);
 
 // Stations API
+
+/**
+ * @swagger
+ * /api/stations:
+ *   get:
+ *     summary: Get all stations
+ *     tags: [Stations]
+ *     responses:
+ *       200:
+ *         description: A list of all stations, sorted by name.
+ *         content:
+ *           application/json:
+ *             example:
+ *               stations:
+ *                 - id: nagoya
+ *                   name: Nagoya Station
+ *                   prefecture: Aichi
+ *                   region: central
+ *                   facilities: [restaurant, shop, restroom]
+ *                   description: Major transportation hub in central Japan.
+ *       500:
+ *         description: Server error.
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Unable to load stations.
+ */
 router.get("/api/stations", getAllStations);
+
+/**
+ * @swagger
+ * /api/stations/{id}:
+ *   get:
+ *     summary: Get one station by its id
+ *     tags: [Stations]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The station id (case-insensitive), for example "nagoya".
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: The station was found.
+ *         content:
+ *           application/json:
+ *             example:
+ *               station:
+ *                 id: nagoya
+ *                 name: Nagoya Station
+ *                 prefecture: Aichi
+ *                 region: central
+ *                 facilities: [restaurant, shop, restroom]
+ *                 description: Major transportation hub in central Japan.
+ *       404:
+ *         description: No station exists with that id.
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Station not found.
+ *       500:
+ *         description: Server error.
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Unable to load station.
+ */
 router.get("/api/stations/:id", getStationById);
 
 // Rail trips
