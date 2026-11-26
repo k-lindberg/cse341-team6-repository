@@ -368,3 +368,26 @@ article.route-detail {
         }
     }
 }
+
+/* Station info (Feature Set 5) */
+.station-info-btn {
+    align-self: flex-start;
+    width: auto;
+    margin-top: 0.5rem;
+}
+
+.station-info {
+    margin-top: 1rem;
+    padding: 1rem;
+    border: 1px solid #dfe7e2;
+    border-radius: 8px;
+    background: #fff;
+}
+
+.station-info-card h3 {
+    margin: 0 0 0.5rem;
+}
+
+.station-info-card p {
+    margin: 0.25rem 0;
+}

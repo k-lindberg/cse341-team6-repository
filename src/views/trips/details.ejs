@@ -51,12 +51,27 @@
                 <div class="station">
                     <span class="station-label">Start</span>
                     <span class="station-name"><%= details.startStation.charAt(0).toUpperCase() + details.startStation.slice(1) %></span>
+                    <button type="button" class="station-info-btn" data-station-id="<%= details.startStation %>" aria-expanded="false" aria-controls="station-info-<%= details.startStation %>">ℹ️ Station info</button>
                 </div>
                 <div class="station">
                     <span class="station-label">End</span>
                     <span class="station-name"><%= details.endStation.charAt(0).toUpperCase() + details.endStation.slice(1) %></span>
+                    <button type="button" class="station-info-btn" data-station-id="<%= details.endStation %>" aria-expanded="false" aria-controls="station-info-<%= details.endStation %>">ℹ️ Station info</button>
                 </div>
             </div>
+
+            <div class="station-info" id="station-info-<%= details.startStation %>" aria-live="polite" hidden></div>
+            <div class="station-info" id="station-info-<%= details.endStation %>" aria-live="polite" hidden></div>
+
+            <template id="station-info-template">
+                <div class="station-info-card">
+                    <h3 data-field="name"></h3>
+                    <p><strong>Prefecture:</strong> <span data-field="prefecture"></span></p>
+                    <p><strong>Region:</strong> <span data-field="region"></span></p>
+                    <p><strong>Facilities:</strong> <span data-field="facilities"></span></p>
+                    <p data-field="description"></p>
+                </div>
+            </template>
         </div>
 
         <div class="route-operating">
