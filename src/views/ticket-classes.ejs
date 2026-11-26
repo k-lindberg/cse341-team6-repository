@@ -1,0 +1,90 @@
+<%- include('./partials/header') %>
+
+<section class="ticket-classes-hero trains-hero">
+    <h1>Ticket Classes</h1>
+    <p>
+        Choose the perfect seating class for your scenic journey across the Kizuna Rail network.
+    </p>
+</section>
+
+<section class="ticket-classes-catalog trains-catalog">
+    <div class="trains-state" id="ticket-classes-loading">Loading ticket classes...</div>
+    <div class="trains-state trains-error" id="ticket-classes-error" hidden></div>
+
+    <div class="trains-grid" id="ticket-classes-list"></div>
+
+    <template id="ticket-class-template">
+        <article class="train-card">
+            <header class="train-card-header" style="margin-top: 1rem;">
+                <h2 data-field="name"></h2>
+            </header>
+
+            <p class="train-description" data-field="description"></p>
+
+            <dl class="train-specs">
+                <div class="spec-item">
+                    <!-- FIX 1: Changed label to Price per Km -->
+                    <dt>Price per Km</dt>
+                    <dd data-field="multiplier"></dd>
+                </div>
+                <div class="spec-item">
+                    <dt>Amenities</dt>
+                    <dd data-field="amenities"></dd>
+                </div>
+            </dl>
+        </article>
+    </template>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        const loadingElement = document.getElementById('ticket-classes-loading');
+        const errorElement = document.getElementById('ticket-classes-error');
+        const listElement = document.getElementById('ticket-classes-list');
+        const template = document.getElementById('ticket-class-template');
+
+        try {
+            const response = await fetch('/api/ticket-classes');
+            
+            if (!response.ok) {
+                throw new Error('Failed to fetch ticket classes data.');
+            }
+
+            const data = await response.json();
+            const ticketClasses = data.ticketClasses;
+
+            // Hide loading state
+            loadingElement.hidden = true;
+
+            if (!ticketClasses || ticketClasses.length === 0) {
+                loadingElement.textContent = "No ticket classes available right now.";
+                loadingElement.hidden = false;
+                return;
+            }
+
+            // Hydrate the template for each ticket class
+            ticketClasses.forEach(ticketClass => {
+                const clone = template.content.cloneNode(true);
+                
+                // Map the data to the data-field attributes
+                clone.querySelector('[data-field="name"]').textContent = ticketClass.name;
+                clone.querySelector('[data-field="description"]').textContent = ticketClass.description;
+                
+                // FIX 2: Changed priceMultiplier to pricePerKm
+                clone.querySelector('[data-field="multiplier"]').textContent = `¥${ticketClass.pricePerKm}`;
+                
+                clone.querySelector('[data-field="amenities"]').textContent = ticketClass.amenities || 'None';
+
+                listElement.appendChild(clone);
+            });
+
+        } catch (error) {
+            console.error('Error hydrating page:', error);
+            loadingElement.hidden = true;
+            errorElement.textContent = "We couldn't load the ticket classes. Please try again later.";
+            errorElement.hidden = false;
+        }
+    });
+</script>
+
+<%- include('./partials/footer') %>

@@ -1,5 +1,6 @@
 import railTripsRouter from "./trips.js";
 import { trainsApi, trainsPage } from "./trains.js";
+import { ticketClassesApi, ticketClassesPage } from "./ticket-classes.js";
 import authRouter from "./auth.js";
 import adminRouter from "./admin.js";
 import { Router } from "express";
@@ -26,7 +27,12 @@ router.use("/", authRouter);
 // Admin (protected dashboard)
 router.use("/admin", adminRouter);
 
+// Users routes (from your PR #17)
 router.use("/users", usersRouter);
+
+// Ticket Classes page (from main)
+router.get('/ticket-classes', ticketClassesPage);
+router.get('/api/ticket-classes', ticketClassesApi);
 
 // Rail trips
 router.use("/trips", railTripsRouter);
