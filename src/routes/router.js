@@ -4,6 +4,7 @@ import apiRoutes from "./api-routes.js";
 import ejsRoutes from "./ejs-routes.js";
 import railTripsRouter from "./trips.js";
 import { trainsApi, trainsPage } from "./trains.js";
+import { ticketClassesApi, ticketClassesPage } from "./ticket-classes.js";
 import authRouter from "./auth.js";
 import adminRouter from "./admin.js";
 import { Router } from "express";
@@ -34,6 +35,10 @@ router.use("/", authRouter);
 
 // Admin (protected dashboard)
 router.use("/admin", adminRouter);
+
+// Ticket Classes page
+router.get('/ticket-classes', ticketClassesPage);
+router.get('/api/ticket-classes', ticketClassesApi);
 
 // Rail trips
 router.use("/trips", railTripsRouter);

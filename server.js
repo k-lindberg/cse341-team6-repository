@@ -1,4 +1,6 @@
 // server.js
+import dns from 'node:dns';
+dns.setServers(['8.8.8.8', '8.8.4.4']);
 import app from "./app.js";
 import mongoose from "mongoose";
 import { connectToDb } from "./src/db/connect.js";
