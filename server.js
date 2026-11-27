@@ -1,21 +1,15 @@
 // server.js
-import dns from 'node:dns';
-dns.setServers(['8.8.8.8', '8.8.4.4']);
+import dns from "node:dns";
+dns.setServers(["8.8.8.8", "8.8.4.4"]);
 import app from "./app.js";
-import mongoose from "mongoose";
 import { connectToDb } from "./src/db/connect.js";
 
 const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || "production";
 const PORT = process.env.PORT || 3000;
 
-// Connect to MongoDB before accepting requests.
+// Connect to MongoDB (this also connects Mongoose internally).
 await connectToDb();
-
-// Connect Mongoose (used by the models in src/models/schemas)
-await mongoose.connect(process.env.MONGODB_URI, {
-  dbName: process.env.MONGODB_DB_NAME,
-});
-console.log("Mongoose connected");
+console.log("MongoDB + Mongoose connected");
 
 // Start the live-reload WebSocket server in development mode.
 if (NODE_ENV.includes("dev")) {

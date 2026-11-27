@@ -12,6 +12,17 @@ const router = Router();
  *   get:
  *     summary: Get all trips
  *     tags: [Trips]
+ *     parameters:
+ *       - in: query
+ *         name: region
+ *         schema:
+ *           type: string
+ *         description: Optional region filter
+ *       - in: query
+ *         name: season
+ *         schema:
+ *           type: string
+ *         description: Optional best-season filter
  *     responses:
  *       200:
  *         description: A list of trips
