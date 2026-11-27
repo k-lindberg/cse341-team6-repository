@@ -3,7 +3,6 @@ import { trainsApi, trainsPage } from "./trains.js";
 import apiRoutes from "./api-routes.js";
 import ejsRoutes from "./ejs-routes.js";
 import railTripsRouter from "./trips.js";
-import { trainsApi, trainsPage } from "./trains.js";
 import { ticketClassesApi, ticketClassesPage } from "./ticket-classes.js";
 import authRouter from "./auth.js";
 import adminRouter from "./admin.js";
@@ -43,9 +42,6 @@ router.use("/users", usersRouter);
 // Ticket Classes page (from main)
 router.get('/ticket-classes', ticketClassesPage);
 router.get('/api/ticket-classes', ticketClassesApi);
-
-// Rail trips
-router.use("/trips", railTripsRouter);
 
 // Test 500 error page
 router.get("/500", testErrorPage);
