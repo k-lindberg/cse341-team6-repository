@@ -41,6 +41,11 @@
     <% if (user) { %>
         <li><a href="<%= user.role === 'admin' ? '/admin/dashboard' : '/dashboard' %>">Dashboard</a></li>
         <li>
+            <a href="/users">
+             <%= user.role === 'admin' ? 'Manage Users' : 'My Account' %>
+            </a>
+        </li>
+        <li>
             <form method="POST" action="/logout" class="logout-form">
                 <button type="submit">Log out</button>
             </form>

@@ -1,0 +1,42 @@
+<%- include('./partials/header') %>
+
+<section class="container">
+  <h1>User Management</h1>
+  <p id="users-message">Loading users...</p>
+
+  <section id="users-list" aria-live="polite"></section>
+
+  <template id="user-card-template">
+    <article class="user-card">
+      <h2 data-field="name"></h2>
+      <p><strong>Username:</strong> <span data-field="username"></span></p>
+      <p><strong>Email:</strong> <span data-field="email"></span></p>
+      <p><strong>Role:</strong> <span data-field="role"></span></p>
+
+      <button type="button" data-action="edit">Edit</button>
+      <button type="button" data-action="delete">Delete</button>
+    </article>
+  </template>
+
+  <dialog id="edit-user-dialog">
+    <form id="edit-user-form">
+      <h2>Edit User</h2>
+
+      <label for="edit-display-name">Display name</label>
+      <input id="edit-display-name" name="displayName" required>
+
+      <label for="edit-username">Username</label>
+      <input id="edit-username" name="username" required>
+
+      <label for="edit-email">Email</label>
+      <input id="edit-email" name="email" type="email" required>
+
+      <p id="edit-user-message" role="alert"></p>
+
+      <button type="submit">Save Changes</button>
+      <button type="button" id="cancel-edit">Cancel</button>
+    </form>
+  </dialog>
+</section>
+
+<%- include('./partials/footer') %>
