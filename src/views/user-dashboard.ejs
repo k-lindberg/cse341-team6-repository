@@ -1,0 +1,19 @@
+<%- include('./partials/header') %>
+
+    <h1>Welcome to the Dashboard</h1>
+    <p>You are signed in as <strong><%= user.displayName %></strong>.</p>
+    
+    <h2>My Bookings</h2>
+
+    <div id="dashboard-bookings-list">
+        <p>Loading your bookings...</p>
+    </div>
+
+    <h2>Quick Links:</h2>
+
+    <ul>
+        <li><a href="/bookings-admin">Manage Bookings</a></li>
+        <li><a href="/users">Manage Users</a></li>
+    </ul>
+
+<%- include('./partials/footer') %>

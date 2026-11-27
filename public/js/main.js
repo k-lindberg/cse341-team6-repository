@@ -88,6 +88,90 @@ const hookTrainsCatalog = async () => {
     }
 };
 
+const hookBookingsCatalog = async () => {
+    const listEl = document.getElementById('bookings-list');
+    const templateEl = document.getElementById('booking-card-template');
+
+    if (!listEl || !templateEl) {
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/bookings');
+
+        if (!response.ok) {
+            throw new Error(
+                `Failed to load bookings (${response.status})`
+            );
+        }
+
+        const bookings = await response.json();
+
+        const fragment = document.createDocumentFragment();
+
+        bookings.forEach((booking) => {
+            const card = templateEl.content.cloneNode(true);
+
+            card.querySelector('[data-field="booking-id"]')
+                .textContent = booking.id;
+
+            card.querySelector('[data-field="trip-id"]')
+                .textContent = `Trip: ${booking.tripId}`;
+
+            card.querySelector('[data-field="schedule-id"]')
+                .textContent = `Schedule: ${booking.scheduleId}`;
+
+            card.querySelector('[data-field="ticket-class"]')
+                .textContent = `Class: ${booking.ticketClass}`;
+
+            card.querySelector('[data-field="selected-day"]')
+                .textContent = `Date: ${booking.selectedDay}`;
+
+            card.querySelector('[data-field="passenger-count"]')
+                .textContent = `Passengers: ${booking.passengers.length}`;
+
+            fragment.appendChild(card);
+        });
+
+        listEl.replaceChildren(fragment);
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+const hookDashboardBookings = async () => {
+    const listEl = document.getElementById('dashboard-bookings-list');
+
+    if (!listEl) {
+        return;
+    }   
+
+    try {
+        const response = await fetch('/api/bookings/me');
+        
+        if (!response.ok) {
+            throw new Error(`Failed to load user bookings (${response.status})`);
+        }
+
+        const bookings = await response.json();
+
+        if (bookings.length === 0) {
+            listEl.innerHTML = '<p>No bookings found.</p>';
+            return;
+        }
+
+        listEl.innerHTML = bookings.map(booking => `
+            <div class="booking-card">
+                <h3>${booking.id}</h3>
+                <p><strong>Trip:</strong> ${booking.tripId}</p>
+                <p><strong>Schedule:</strong> ${booking.scheduleId}</p>
+                <p><strong>Passengers:</strong> ${booking.passengers.length}</p>
+            </div>
+        `).join('');
+    } catch (error) {
+        console.error(error);
+        listEl.innerHTML = '<p>Unable to load your bookings at this time.</p>';
+    }
 const hookUsersManagement = async () => {
     const listEl = document.getElementById("users-list");
     const messageEl = document.getElementById("users-message");
@@ -241,5 +325,7 @@ document.addEventListener('DOMContentLoaded', () => {
     hookRegionSorter();
     hookSeasonSorter();
     hookTrainsCatalog();
+    hookBookingsCatalog();
+    hookDashboardBookings();
     hookUsersManagement();
 });
