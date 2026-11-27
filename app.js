@@ -47,7 +47,12 @@ app.use(
 app.use(loadSessionUser);
 
 app.use(globalMiddleware);
-app.use("/", routes);
+
+// Swagger API documentation
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+app.use('/', routes);
+
 
 // Catch requests that did not match a route.
 app.use((req, res, next) => {

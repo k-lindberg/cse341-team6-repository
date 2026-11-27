@@ -1,3 +1,14 @@
+import { Router } from 'express';
+import ejsRoutes from './ejs-routes.js';
+import apiRoutes from './api-routes.js';
+
+const router = Router();
+
+// Website routes (EJS pages)
+router.use('/', ejsRoutes);
+
+// JSON API routes
+router.use('/api', apiRoutes);
 import railTripsRouter from "./trips.js";
 import { trainsApi, trainsPage } from "./trains.js";
 import { ticketClassesApi, ticketClassesPage } from "./ticket-classes.js";
