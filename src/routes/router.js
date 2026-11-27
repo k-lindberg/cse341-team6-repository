@@ -7,6 +7,7 @@ import ejsRoutes from './ejs-routes.js';
 import { ticketClassesApi, ticketClassesPage } from "./ticket-classes.js";
 import authRouter from "./auth.js";
 import adminRouter from "./admin.js";
+import usersRouter from "./users.js";
 
 const router = Router();
 
@@ -28,7 +29,10 @@ router.use("/", authRouter);
 // Admin (protected dashboard)
 router.use("/admin", adminRouter);
 
-// Ticket Classes page
+// Users routes (from your PR #17)
+router.use("/users", usersRouter);
+
+// Ticket Classes page (from main)
 router.get('/ticket-classes', ticketClassesPage);
 router.get('/api/ticket-classes', ticketClassesApi);
 
