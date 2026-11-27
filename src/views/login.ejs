@@ -1,0 +1,21 @@
+<%- include('./partials/header') %>
+<h1>Log in</h1>
+
+<% if (error) { %>
+    <p class="error"><%= error %></p>
+<% } %>
+
+<form method="POST" action="/login">
+    <label>
+        Email or username
+        <input type="text" name="identifier" value="<%= values.identifier || '' %>" required>
+    </label>
+    <label>
+        Password
+        <input type="password" name="password" required>
+    </label>
+    <button type="submit">Log in</button>
+</form>
+
+<p>Need an account? <a href="/register">Register</a></p>
+<%- include('./partials/footer') %>
