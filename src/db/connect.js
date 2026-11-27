@@ -18,7 +18,8 @@ const connectToDb = async (options = {}) => {
   }
 
   client = new MongoClient(connectionString);
-  await client.connect();
+    await client.connect();
+    await mongoose.connect(connectionString);
   database = client.db(databaseName);
 
   // Connect Mongoose to the same URI + DB so Mongoose models
