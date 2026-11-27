@@ -4,6 +4,9 @@ import { Router } from 'express';
 import { homePage, aboutPage, testErrorPage } from './index.js';
 import apiRoutes from './api-routes.js';
 import ejsRoutes from './ejs-routes.js';
+import { ticketClassesApi, ticketClassesPage } from "./ticket-classes.js";
+import authRouter from "./auth.js";
+import adminRouter from "./admin.js";
 
 const router = Router();
 
@@ -24,6 +27,10 @@ router.use("/", authRouter);
 
 // Admin (protected dashboard)
 router.use("/admin", adminRouter);
+
+// Ticket Classes page
+router.get('/ticket-classes', ticketClassesPage);
+router.get('/api/ticket-classes', ticketClassesApi);
 
 // Rail trips
 router.use("/trips", railTripsRouter);
