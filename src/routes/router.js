@@ -1,5 +1,8 @@
-import railTripsRouter from "./trips.js";
+// src/routes/router.js
 import { trainsApi, trainsPage } from "./trains.js";
+import apiRoutes from "./api-routes.js";
+import ejsRoutes from "./ejs-routes.js";
+import railTripsRouter from "./trips.js";
 import { ticketClassesApi, ticketClassesPage } from "./ticket-classes.js";
 import authRouter from "./auth.js";
 import adminRouter from "./admin.js";
@@ -21,6 +24,12 @@ router.get("/trains", trainsPage);
 // Trains API
 router.get("/api/trains", trainsApi);
 
+// API routes (Trips, etc.)
+router.use("/api", apiRoutes);
+
+// EJS Page routes (Trips, etc.)
+router.use("/", ejsRoutes);
+
 // Auth (register/login/logout)
 router.use("/", authRouter);
 
@@ -33,9 +42,6 @@ router.use("/users", usersRouter);
 // Ticket Classes page (from main)
 router.get('/ticket-classes', ticketClassesPage);
 router.get('/api/ticket-classes', ticketClassesApi);
-
-// Rail trips
-router.use("/trips", railTripsRouter);
 
 // Test 500 error page
 router.get("/500", testErrorPage);
