@@ -1,15 +1,10 @@
-
-openapi: 3.0.3
-info:
-  title: Kizuna Rail API
-  version: 1.0.0
-  description: API documentation for the Kizuna Rail application.
-
-paths:
   /api/trains:
     get:
-      summary: Get paginated trains
-      description: Returns trains sorted by name in ascending order.
+      summary: Get paginated and filtered trains
+      description: >
+        Returns trains sorted by name in ascending order.
+        Supports keyword search and train-type filtering.
+        Pagination metadata reflects the matching trains.
       parameters:
         - name: page
           in: query
@@ -19,9 +14,27 @@ paths:
             type: integer
             minimum: 1
             default: 1
+        - name: search
+          in: query
+          required: false
+          description: >
+            Search train names, operators, types, power sources, and descriptions.
+            Search is case-insensitive and limited to 100 characters.
+          schema:
+            type: string
+            maxLength: 100
+        - name: type
+          in: query
+          required: false
+          description: >
+            Filter by train type. Matching is case-insensitive.
+            Must be no more than 50 characters.
+          schema:
+            type: string
+            maxLength: 50
       responses:
         '200':
-          description: Successfully retrieved paginated trains.
+          description: Successfully retrieved matching trains.
           content:
             application/json:
               schema:
@@ -42,10 +55,11 @@ paths:
                         example: 10
                       totalTrains:
                         type: integer
+                        description: Number of trains matching the supplied filters.
                       totalPages:
                         type: integer
         '400':
-          description: Invalid page number.
+          description: Invalid page number, search value, or train type.
           content:
             application/json:
               schema:

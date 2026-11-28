@@ -96,4 +96,72 @@ describe('GET /api/trains', () => {
     expect(secondPage.body.pagination.currentPage).toBe(2);
     expect(secondPage.body.pagination.totalPages).toBe(2);
   });
+  test('searches trains by keyword', async () => {
+    await getDb().collection('trains').insertOne({
+      id: 'search-test-train',
+      name: 'Unique Search Test Train',
+      operator: 'Test Railway',
+      type: 'Express',
+      powerSource: 'Electric',
+      description: 'A train for testing keyword search'
+    });
+
+    const response = await request(app)
+      .get('/api/trains?search=Unique%20Search%20Test');
+
+    expect(response.status).toBe(200);
+    expect(response.body.trains).toHaveLength(1);
+    expect(response.body.trains[0].id).toBe('search-test-train');
+    expect(response.body.pagination.totalTrains).toBe(1);
+  });
+
+  test('filters trains by type', async () => {
+    await getDb().collection('trains').insertOne({
+      id: 'type-filter-test-train',
+      name: 'Unique Type Filter Train',
+      type: 'TestType'
+    });
+
+    const response = await request(app)
+      .get('/api/trains?type=testtype');
+
+    expect(response.status).toBe(200);
+    expect(response.body.trains).toHaveLength(1);
+    expect(response.body.trains[0].id).toBe('type-filter-test-train');
+    expect(response.body.pagination.totalTrains).toBe(1);
+  });
+
+  test('combines keyword search and type filtering', async () => {
+    await getDb().collection('trains').insertMany([
+      {
+        id: 'combined-filter-match',
+        name: 'Unique Combined Test Train',
+        type: 'CombinedTestType'
+      },
+      {
+        id: 'combined-filter-wrong-type',
+        name: 'Unique Combined Test Train',
+        type: 'OtherType'
+      }
+    ]);
+
+    const response = await request(app)
+      .get('/api/trains?search=Unique%20Combined&type=CombinedTestType');
+
+    expect(response.status).toBe(200);
+    expect(response.body.trains).toHaveLength(1);
+    expect(response.body.trains[0].id).toBe('combined-filter-match');
+    expect(response.body.pagination.totalTrains).toBe(1);
+  });
+
+  test('rejects search input longer than 100 characters', async () => {
+    const response = await request(app)
+      .get(`/api/trains?search=${'a'.repeat(101)}`);
+
+    expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty(
+      'error',
+      'Search must be a string of no more than 100 characters.'
+    );
+  });
 });
