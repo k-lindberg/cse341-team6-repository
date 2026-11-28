@@ -2,9 +2,41 @@
 
 <section class="container">
   <h1>User Management</h1>
-  <p id="users-message">Loading users...</p>
 
+  <!-- Search and Filter Controls -->
+  <div
+    id="user-filters"
+    style="margin-bottom: 1.5rem; display: flex; gap: 1rem"
+  >
+    <input
+      type="text"
+      id="search-input"
+      placeholder="Search name, username, or email..."
+      style="padding: 0.5rem; flex: 1"
+    />
+    <select id="role-filter" style="padding: 0.5rem">
+      <option value="all">All Roles</option>
+      <option value="customer">Customers</option>
+      <option value="admin">Admins</option>
+    </select>
+    <button type="button" id="search-btn" style="padding: 0.5rem 1rem">
+      Search
+    </button>
+  </div>
+
+  <p id="users-message">Loading users...</p>
   <section id="users-list" aria-live="polite"></section>
+
+  <!-- Pagination Controls -->
+  <nav
+    id="pagination-controls"
+    aria-label="Pagination"
+    style="margin-top: 1rem; display: flex; gap: 1rem; align-items: center"
+  >
+    <button type="button" id="prev-page" disabled>&larr; Previous</button>
+    <span id="page-indicator">Page 1</span>
+    <button type="button" id="next-page" disabled>Next &rarr;</button>
+  </nav>
 
   <template id="user-card-template">
     <article class="user-card">
@@ -23,13 +55,13 @@
       <h2>Edit User</h2>
 
       <label for="edit-display-name">Display name</label>
-      <input id="edit-display-name" name="displayName" required>
+      <input id="edit-display-name" name="displayName" required />
 
       <label for="edit-username">Username</label>
-      <input id="edit-username" name="username" required>
+      <input id="edit-username" name="username" required />
 
       <label for="edit-email">Email</label>
-      <input id="edit-email" name="email" type="email" required>
+      <input id="edit-email" name="email" type="email" required />
 
       <p id="edit-user-message" role="alert"></p>
 
