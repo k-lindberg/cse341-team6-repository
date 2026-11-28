@@ -2,8 +2,29 @@
 
 <section class="container">
   <h1>User Management</h1>
-  <p id="users-message">Loading users...</p>
 
+  <!-- Search and Filter Controls -->
+  <div
+    id="user-filters"
+    style="margin-bottom: 1.5rem; display: flex; gap: 1rem"
+  >
+    <input
+      type="text"
+      id="search-input"
+      placeholder="Search name, username, or email..."
+      style="padding: 0.5rem; flex: 1"
+    />
+    <select id="role-filter" style="padding: 0.5rem">
+      <option value="all">All Roles</option>
+      <option value="customer">Customers</option>
+      <option value="admin">Admins</option>
+    </select>
+    <button type="button" id="search-btn" style="padding: 0.5rem 1rem">
+      Search
+    </button>
+  </div>
+
+  <p id="users-message">Loading users...</p>
   <section id="users-list" aria-live="polite"></section>
 
   <!-- Pagination Controls -->

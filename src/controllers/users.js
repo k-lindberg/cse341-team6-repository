@@ -23,6 +23,7 @@ const parsePositiveInteger = (value, defaultValue) => {
 
 export const listUsers = async (req, res, next) => {
   try {
+    // 1. Validate Pagination
     const page = parsePositiveInteger(req.query.page, 1);
     const requestedLimit = parsePositiveInteger(req.query.limit, 10);
 
@@ -38,6 +39,7 @@ export const listUsers = async (req, res, next) => {
       });
     }
 
+    // 2. Validate Sort
     if (req.query.sort && !allowedSortFields.includes(req.query.sort)) {
       return res.status(400).json({
         errors: [{ field: "sort", message: "sort is not supported." }],
@@ -47,8 +49,56 @@ export const listUsers = async (req, res, next) => {
     const sort = req.query.sort || "username";
     const order = req.query.order === "desc" ? -1 : 1;
 
+    // 3. Build the Base Filter (Role-based access)
     const filter = req.user.role === "admin" ? {} : { _id: req.user.id };
 
+    // 4. Add Search (q)
+    if (req.query.q !== undefined) {
+      if (typeof req.query.q !== "string") {
+        return res.status(400).json({
+          errors: [{ field: "q", message: "Search text must be a string." }],
+        });
+      }
+      const searchText = req.query.q.trim();
+      if (!searchText || searchText.length > 100) {
+        return res.status(400).json({
+          errors: [
+            {
+              field: "q",
+              message: "Search text must be between 1 and 100 characters.",
+            },
+          ],
+        });
+      }
+      // Use regex for case-insensitive search across three fields
+      const regex = new RegExp(searchText, "i");
+      filter.$or = [
+        { displayName: regex },
+        { username: regex },
+        { email: regex },
+      ];
+    }
+
+    // 5. Add Role Filter
+    if (req.query.role !== undefined) {
+      const allowedRoles = ["customer", "admin"];
+      if (!allowedRoles.includes(req.query.role)) {
+        return res.status(400).json({
+          errors: [
+            { field: "role", message: "role must be 'customer' or 'admin'." },
+          ],
+        });
+      }
+      const roleDoc = await Role.findOne({ name: req.query.role });
+      if (roleDoc) {
+        filter.role = roleDoc._id;
+      } else {
+        // If role doesn't exist in DB, force no results
+        filter.role = null;
+      }
+    }
+
+    // 6. Execute Query
     const { users, totalItems } = await getPaginatedUsers({
       filter,
       page,
@@ -57,8 +107,13 @@ export const listUsers = async (req, res, next) => {
       order,
     });
 
+    // 7. Return Response
     return res.json({
       data: users.map(publicUser),
+      query: {
+        q: req.query.q || null,
+        role: req.query.role || null,
+      },
       pagination: {
         page,
         limit: requestedLimit,

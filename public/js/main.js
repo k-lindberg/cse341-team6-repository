@@ -106,9 +106,12 @@ const hookUsersManagement = async () => {
   const nextBtn = document.getElementById("next-page");
   const pageIndicator = document.getElementById("page-indicator");
 
-  if (!listEl || !messageEl || !templateEl) {
-    return;
-  }
+  // New filter elements
+  const searchInput = document.getElementById("search-input");
+  const roleFilter = document.getElementById("role-filter");
+  const searchBtn = document.getElementById("search-btn");
+
+  if (!listEl || !messageEl || !templateEl) return;
 
   let selectedUserId = null;
   let currentPage = 1;
@@ -120,12 +123,28 @@ const hookUsersManagement = async () => {
     messageEl.textContent = "Loading users...";
     listEl.replaceChildren();
 
+    // Build Query String
+    const params = new URLSearchParams({
+      page: page,
+      limit: LIMIT,
+    });
+
+    const q = searchInput.value.trim();
+    const role = roleFilter.value;
+
+    if (q) params.append("q", q);
+    if (role && role !== "all") params.append("role", role);
+
     try {
-      const response = await fetch(`/users/api?page=${page}&limit=${LIMIT}`);
+      const response = await fetch(`/users/api?${params.toString()}`);
       const payload = await response.json();
 
       if (!response.ok) {
-        throw new Error(payload.message || "Unable to load users.");
+        throw new Error(
+          payload.errors?.[0]?.message ||
+            payload.message ||
+            "Unable to load users.",
+        );
       }
 
       const users = payload.data || [];
@@ -135,7 +154,7 @@ const hookUsersManagement = async () => {
       users.forEach((u) => usersCache.set(u.id, u));
 
       if (!users.length) {
-        messageEl.textContent = "No users found.";
+        messageEl.textContent = "No users found matching your filters.";
         if (prevBtn) prevBtn.disabled = true;
         if (nextBtn) nextBtn.disabled = true;
         if (pageIndicator) pageIndicator.textContent = "Page 1";
@@ -169,12 +188,18 @@ const hookUsersManagement = async () => {
     }
   };
 
-  if (prevBtn) {
+  // Filter Events
+  searchBtn?.addEventListener("click", () => loadUsers(1)); // Reset to page 1 on new search
+  searchInput?.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") loadUsers(1);
+  });
+  roleFilter?.addEventListener("change", () => loadUsers(1));
+
+  // Pagination Events
+  if (prevBtn)
     prevBtn.addEventListener("click", () => loadUsers(currentPage - 1));
-  }
-  if (nextBtn) {
+  if (nextBtn)
     nextBtn.addEventListener("click", () => loadUsers(currentPage + 1));
-  }
 
   listEl.addEventListener("click", async (event) => {
     const button = event.target.closest("button");
@@ -190,7 +215,6 @@ const hookUsersManagement = async () => {
         messageEl.textContent = "User not found in cache.";
         return;
       }
-
       selectedUserId = userId;
       formEl.elements.displayName.value = user.displayName;
       formEl.elements.username.value = user.username;
@@ -200,23 +224,16 @@ const hookUsersManagement = async () => {
     }
 
     if (button.dataset.action === "delete") {
-      if (!window.confirm("Are you sure you want to delete this user?")) {
-        return;
-      }
+      if (!window.confirm("Are you sure you want to delete this user?")) return;
 
       try {
         const response = await fetch(
           `/users/api/${encodeURIComponent(userId)}`,
-          {
-            method: "DELETE",
-          },
+          { method: "DELETE" },
         );
         const payload = await response.json();
-
-        if (!response.ok) {
+        if (!response.ok)
           throw new Error(payload.message || "Unable to delete user.");
-        }
-
         await loadUsers(currentPage);
       } catch (error) {
         messageEl.textContent = error.message;
@@ -244,13 +261,9 @@ const hookUsersManagement = async () => {
             body: JSON.stringify(updates),
           },
         );
-
         const payload = await response.json();
-
-        if (!response.ok) {
+        if (!response.ok)
           throw new Error(payload.message || "Unable to update user.");
-        }
-
         dialogEl.close();
         await loadUsers(currentPage);
       } catch (error) {
@@ -259,9 +272,7 @@ const hookUsersManagement = async () => {
     });
   }
 
-  cancelEl?.addEventListener("click", () => {
-    dialogEl.close();
-  });
+  cancelEl?.addEventListener("click", () => dialogEl.close());
 
   await loadUsers(1);
 };
