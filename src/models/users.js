@@ -56,3 +56,25 @@ export async function verifyPassword(plainPassword, passwordHash) {
   if (!plainPassword || !passwordHash) return false;
   return bcrypt.compare(plainPassword, passwordHash);
 }
+
+/**
+ * Fetch a paginated list of users.
+ * The controller builds the filter and validates pagination options.
+ */
+export async function getPaginatedUsers({ filter, page, limit, sort, order }) {
+  const skip = (page - 1) * limit;
+  const sortOptions = { [sort]: order };
+
+  const [users, totalItems] = await Promise.all([
+    User.find(filter)
+      .select("-passwordHash")
+      .populate("role", "name")
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(limit)
+      .lean(),
+    User.countDocuments(filter),
+  ]);
+
+  return { users, totalItems };
+}

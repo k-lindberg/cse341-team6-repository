@@ -6,6 +6,17 @@
 
   <section id="users-list" aria-live="polite"></section>
 
+  <!-- Pagination Controls -->
+  <nav
+    id="pagination-controls"
+    aria-label="Pagination"
+    style="margin-top: 1rem; display: flex; gap: 1rem; align-items: center"
+  >
+    <button type="button" id="prev-page" disabled>&larr; Previous</button>
+    <span id="page-indicator">Page 1</span>
+    <button type="button" id="next-page" disabled>Next &rarr;</button>
+  </nav>
+
   <template id="user-card-template">
     <article class="user-card">
       <h2 data-field="name"></h2>
@@ -23,13 +34,13 @@
       <h2>Edit User</h2>
 
       <label for="edit-display-name">Display name</label>
-      <input id="edit-display-name" name="displayName" required>
+      <input id="edit-display-name" name="displayName" required />
 
       <label for="edit-username">Username</label>
-      <input id="edit-username" name="username" required>
+      <input id="edit-username" name="username" required />
 
       <label for="edit-email">Email</label>
-      <input id="edit-email" name="email" type="email" required>
+      <input id="edit-email" name="email" type="email" required />
 
       <p id="edit-user-message" role="alert"></p>
 
