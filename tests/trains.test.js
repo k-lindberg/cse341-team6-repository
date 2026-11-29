@@ -48,4 +48,52 @@ describe('GET /api/trains', () => {
       ])
     );
   });
+  test('returns pagination metadata', async () => {
+    const response = await request(app).get('/api/trains');
+
+    expect(response.status).toBe(200);
+    expect(response.body.pagination).toEqual({
+      currentPage: 1,
+      pageSize: 10,
+      totalTrains: 4,
+      totalPages: 1
+    });
+  });
+
+  test('rejects invalid page numbers', async () => {
+    const response = await request(app).get('/api/trains?page=0');
+
+    expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty(
+      'error',
+      'Page must be a positive integer.'
+    );
+  });
+
+  test('splits trains into pages of 10', async () => {
+    const extraTrains = Array.from({ length: 11 }, (_, index) => ({
+      id: `pagination-train-${index + 1}`,
+      name: `Pagination Train ${index + 1}`,
+      operator: 'Test Railway',
+      type: 'Express',
+      maxSpeedKmh: 200,
+      capacity: 300,
+      powerSource: 'Electric'
+    }));
+
+    await getDb().collection('trains').insertMany(extraTrains);
+
+    const firstPage = await request(app).get('/api/trains?page=1');
+    const secondPage = await request(app).get('/api/trains?page=2');
+
+    expect(firstPage.status).toBe(200);
+    expect(secondPage.status).toBe(200);
+
+    expect(firstPage.body.trains).toHaveLength(10);
+    expect(secondPage.body.trains).toHaveLength(5);
+
+    expect(firstPage.body.pagination.totalTrains).toBe(15);
+    expect(secondPage.body.pagination.currentPage).toBe(2);
+    expect(secondPage.body.pagination.totalPages).toBe(2);
+  });
 });

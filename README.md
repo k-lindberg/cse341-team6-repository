@@ -107,3 +107,70 @@ Forking maintains the connection to the original repository and allows you to co
 ## License
 
 This is an educational project—feel free to use it for learning and teaching. The project is released under the MIT License; see `LICENSE.txt` for the full text.
+
+## Trains API — Pagination
+
+### Endpoint
+
+`GET /api/trains`
+
+Returns a paginated list of trains.
+
+### Query Parameters
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `page` | Integer | `1` | The page number to retrieve. Must be a positive integer. |
+
+The page size is fixed at **10 trains per page**.
+
+### Example Requests
+
+- `GET /api/trains` — retrieves the first page.
+- `GET /api/trains?page=1` — retrieves the first page.
+- `GET /api/trains?page=2` — retrieves the second page.
+
+### Successful Response
+
+Status: `200 OK`
+
+```json
+{
+  "trains": [
+    {
+      "name": "Example Train"
+    }
+  ],
+  "pagination": {
+    "currentPage": 1,
+    "pageSize": 10,
+    "totalTrains": 15,
+    "totalPages": 2
+  }
+}
+```
+
+The train object above is illustrative; actual train records contain the fields stored in the database.
+
+### Pagination Metadata
+
+- `currentPage`: The page requested.
+- `pageSize`: Maximum number of trains returned per page.
+- `totalTrains`: Total number of train records.
+- `totalPages`: Total number of available pages.
+
+### Error Response
+
+Invalid page values, including zero, negative numbers, decimals, and non-numeric values, return:
+
+Status: `400 Bad Request`
+
+```json
+{
+  "error": "Page must be a positive integer."
+}
+```
+
+### Implementation
+
+Trains are sorted by name in ascending order. MongoDB `skip()` and `limit()` are used to retrieve the requested page.
