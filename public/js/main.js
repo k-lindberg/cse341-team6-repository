@@ -34,6 +34,7 @@ const hookSeasonSorter = () => {
     }
 };
 
+
 const hookTrainsCatalog = async () => {
     const listEl = document.getElementById('trains-list');
     const templateEl = document.getElementById('train-card-template');
@@ -44,14 +45,21 @@ const hookTrainsCatalog = async () => {
     const nextButton = document.getElementById('trains-next');
     const pageStatus = document.getElementById('trains-page-status');
 
+    const searchInput = document.getElementById('trains-search');
+    const typeFilter = document.getElementById('trains-type-filter');
+
     if (!listEl || !templateEl) {
         return;
     }
 
     let currentPage = 1;
     let totalPages = 1;
+    let searchTimer;
+    let latestRequest = 0;
 
     const loadTrains = async (page) => {
+        const requestId = ++latestRequest;
+
         if (loadingEl) {
             loadingEl.hidden = false;
             loadingEl.textContent = 'Loading trains...';
@@ -66,13 +74,33 @@ const hookTrainsCatalog = async () => {
         }
 
         try {
-            const response = await fetch(`/api/trains?page=${page}`);
+            const params = new URLSearchParams();
+            params.set('page', page);
+
+            const search = searchInput?.value.trim() || '';
+            const type = typeFilter?.value.trim() || '';
+
+            if (search) {
+                params.set('search', search);
+            }
+
+            if (type) {
+                params.set('type', type);
+            }
+
+            const response = await fetch(`/api/trains?${params.toString()}`);
 
             if (!response.ok) {
                 throw new Error(`Failed to load trains (${response.status})`);
             }
 
             const payload = await response.json();
+
+            // Ignore an older request if a newer one has started.
+            if (requestId !== latestRequest) {
+                return;
+            }
+
             const trains = payload.trains || [];
             const pagination = payload.pagination;
 
@@ -103,10 +131,16 @@ const hookTrainsCatalog = async () => {
                 fragment.appendChild(card);
             });
 
+            if (trains.length === 0) {
+                const emptyMessage = document.createElement('p');
+                emptyMessage.textContent = 'No trains match your search or filter.';
+                fragment.appendChild(emptyMessage);
+            }
+
             listEl.replaceChildren(fragment);
 
             if (pageStatus) {
-                pageStatus.textContent = `Page ${currentPage} of ${totalPages}`;
+                pageStatus.textContent = `Page ${currentPage} of ${Math.max(totalPages, 1)}`;
             }
 
             if (previousButton) {
@@ -125,13 +159,18 @@ const hookTrainsCatalog = async () => {
                 loadingEl.hidden = true;
             }
         } catch (error) {
+            if (requestId !== latestRequest) {
+                return;
+            }
+
             if (loadingEl) {
                 loadingEl.hidden = true;
             }
 
             if (errorEl) {
                 errorEl.hidden = false;
-                errorEl.textContent = 'Unable to load trains right now. Please try again in a moment.';
+                errorEl.textContent =
+                    'Unable to load trains right now. Please try again in a moment.';
             }
         }
     };
@@ -148,8 +187,24 @@ const hookTrainsCatalog = async () => {
         }
     });
 
+    // Search after the user pauses typing.
+    searchInput?.addEventListener('input', () => {
+        clearTimeout(searchTimer);
+
+        searchTimer = setTimeout(() => {
+            loadTrains(1);
+        }, 300);
+    });
+
+    // Apply the selected train type immediately.
+    typeFilter?.addEventListener('change', () => {
+        clearTimeout(searchTimer);
+        loadTrains(1);
+    });
+
     await loadTrains(currentPage);
 };
+
 
 document.addEventListener('DOMContentLoaded', () => {
     hookRegionSorter();

@@ -11,6 +11,19 @@
     <div class="trains-state" id="trains-loading">Loading trains...</div>
     <div class="trains-state trains-error" id="trains-error" hidden></div>
 
+    <div class="trains-filters">
+        <label for="trains-search">Search trains</label>
+        <input type="search" id="trains-search" placeholder="Search by name, operator, or details" maxlength="100">
+    
+        <label for="trains-type-filter">Filter by type</label>
+        <select id="trains-type-filter">
+            <option value="">All train types</option>
+            <option value="Steam Excursion">Steam Excursion</option>
+            <option value="Diesel Limited Express">Diesel Limited Express</option>
+            <option value="Limited Express">Limited Express</option>
+        </select>
+    </div>
+
     <div class="trains-grid" id="trains-list"></div>
     <div class="trains-pagination" id="trains-pagination" hidden>
       <button type="button" id="trains-previous" disabled>Previous</button>
